@@ -1,1 +1,0 @@
-ALTER TABLE bank_account ADD CONSTRAINT fk_bank_account_user_id FOREIGN KEY (user_id) REFERENCES jhi_user(id);
