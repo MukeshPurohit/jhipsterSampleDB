@@ -5,7 +5,7 @@ create table jhi_user (
     first_name varchar(50),
     last_name varchar(50),
     email varchar(100) unique not null,
-    image_url varchar(256) not null,
+    image_url varchar(256) null,
     activated boolean not null default 0,
     lang_key varchar(5),
     activation_key varchar(20),
