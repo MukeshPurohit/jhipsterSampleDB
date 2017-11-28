@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="dbunit-export" basedir=".">
+	<property environment="env"/>
+	<!--<taskdef name="dbunit" classname="org.dbunit.ant.DbUnitTask"/> -->
+	<property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+	<property name="dbunit.format" value="flat"/>
+    <path id="DbUnitTesting.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="libs/junit.jar"/>
+        <pathelement location="libs/mysql-connector-java-6.0.6.jar"/>
+        <pathelement location="libs/commons-io-2.5.jar"/>
+        <pathelement location="libs/slf4j-api-1.7.25.jar"/>
+        <pathelement location="libs/slf4j-simple-1.6.1.jar"/>
+        <pathelement location="libs/org.apache.commons.pool.jar"/>
+        <pathelement location="libs/dbunit-2.5.4.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="test/src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="test/src"/>
+            <classpath refid="DbUnitTesting.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+<!--
+	<target name="DatabaseExportSample">
+        <java classname="test.DatabaseExportSample" failonerror="true" fork="yes">
+            <classpath refid="DbUnitTesting.classpath"/>
+        </java>
+    </target>
+
+    <target name="Database_Tests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.FlywayDBUnit_Tests" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="DbUnitTesting.classpath"/>
+        </junit>
+    </target>
+-->
+    <target name="FlywayDBUnit_Tests">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.FlywayDBUnit_Tests" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="DbUnitTesting.classpath"/>
+        </junit>
+    </target>
+<!--
+	<target name="FlywayDBUnit_Tests.testCheckActualvsLoaded5">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.FlywayDBUnit_Tests" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="DbUnitTesting.classpath"/>
+        </junit>
+    </target>
+    <target name="test">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.FlywayDBUnit_Tests" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="DbUnitTesting.classpath"/>
+        </junit>
+    </target>
+-->
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
